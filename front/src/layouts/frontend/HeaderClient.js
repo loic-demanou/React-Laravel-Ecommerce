@@ -13,8 +13,9 @@ const HeaderClient = () => {
             <div className="col-lg-6 offer mb-3 mb-lg-0"><Link to="#" className="btn btn-success btn-sm">Offer of the day</Link><Link to="#" className="ml-1">Get flat 35% off on orders over $50!</Link></div>
             <div className="col-lg-6 text-center text-lg-right">
               <ul className="menu list-inline mb-0">
-                <li className="list-inline-item"><Link to="#" data-toggle="modal" data-target="#login-modal">Login</Link></li>
-                <li className="list-inline-item"><Link to="register.html">Register</Link></li>
+                <li className="list-inline-item"><Link to="/login">Login</Link></li>
+                {/* <li className="list-inline-item"><Link to="#" data-toggle="modal" data-target="#login-modal">Login</Link></li> */}
+                <li className="list-inline-item"><Link to="/register">Register</Link></li>
                 <li className="list-inline-item"><Link to="contact.html">Contact</Link></li>
                 <li className="list-inline-item"><Link to="#">Recently viewed</Link></li>
               </ul>
@@ -41,7 +42,7 @@ const HeaderClient = () => {
                   </p>
                 </form>
                 <p className="text-center text-muted">Not registered yet?</p>
-                <p className="text-center text-muted"><a href="register.html"><strong>Register now</strong></a>! It is easy and done in 1&nbsp;minute and gives you access to special discounts and much more!</p>
+                <p className="text-center text-muted"><Link to="/register"><strong>Register now</strong></Link>! It is easy and done in 1&nbsp;minute and gives you access to special discounts and much more!</p>
               </div>
             </div>
           </div>
