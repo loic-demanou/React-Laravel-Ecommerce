@@ -1,6 +1,49 @@
+import axios from "axios";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router";
+import swal from "sweetalert";
 
 const HeaderClient = () => {
+
+  const history = useHistory();
+
+  const logoutSubmit =(e)=> {
+    e.preventDefault();
+    axios.post(`/api/logout`)
+    .then(res => {
+      if (res.data.status === 200) {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('auth_name');
+        swal("Success", res.data.message, 'success');
+        history.push('/');
+
+      } else {
+        
+      }
+    })
+  }
+
+  var AuthButtons ='';
+  if (!localStorage.getItem('auth_token')) {
+    
+    AuthButtons = (
+      <>
+        <li className="list-inline-item"><Link to="/login">Login</Link></li>
+        <li className="list-inline-item"><Link to="/register">Register</Link></li>
+      </>
+    )
+  } else {
+    AuthButtons = (
+      <>
+          <li className="list-inline-item">
+            <button type="button" onClick={logoutSubmit} className="btn btn-danger btn-sm">Logout</button>
+          </li>
+      </>
+    )
+  }
+
+
+
   return (
     <div>
       {/*
@@ -13,11 +56,15 @@ const HeaderClient = () => {
             <div className="col-lg-6 offer mb-3 mb-lg-0"><Link to="#" className="btn btn-success btn-sm">Offer of the day</Link><Link to="#" className="ml-1">Get flat 35% off on orders over $50!</Link></div>
             <div className="col-lg-6 text-center text-lg-right">
               <ul className="menu list-inline mb-0">
-                <li className="list-inline-item"><Link to="/login">Login</Link></li>
-                {/* <li className="list-inline-item"><Link to="#" data-toggle="modal" data-target="#login-modal">Login</Link></li> */}
+
+                {AuthButtons}
+
+                {/* <li className="list-inline-item"><Link to="/login">Login</Link></li>
                 <li className="list-inline-item"><Link to="/register">Register</Link></li>
+                <li className="list-inline-item"><nutton type="button" className="btn btn-danger btn-sm">Logout</nutton></li> */}
+                {/* <li className="list-inline-item"><Link to="#" data-toggle="modal" data-target="#login-modal">Login</Link></li> */}
                 <li className="list-inline-item"><Link to="contact.html">Contact</Link></li>
-                <li className="list-inline-item"><Link to="#">Recently viewed</Link></li>
+                {/* <li className="list-inline-item"><Link to="#">Recently viewed</Link></li> */}
               </ul>
             </div>
           </div>

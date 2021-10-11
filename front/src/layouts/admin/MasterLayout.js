@@ -38,7 +38,7 @@ const MasterLayout = () => {
                                             />
                                         )
                                     )
-                                })
+                                }) 
                             }
                             <Redirect from="/admin" to="/admin/dashboard" />
                         </Switch>
