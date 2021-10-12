@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\ProductController;
@@ -30,8 +31,25 @@ Route::post('/login', [AuthController::class, 'login']);
             return response()->json(['message' => 'You are in', 'status' => 200], 200);
         });
 
+        Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
+        Route::post('/create-category', [CategoryController::class, 'store'])->name('category.store');
+        Route::get('/admin/category/show/{id}', [CategoryController::class, 'show'])->name('category.show');
+        Route::put('/admin/category/update/{id}', [CategoryController::class, 'update'])->name('category.update');
+        Route::delete('/category/delete/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
+
+        
         // Route::post('/logout', [AuthController::class, 'logout']);
-});
+    });
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/getCategory', [CategoryController::class, 'getCategory']);
+    Route::post('/create-product', [ProductController::class, 'store']);
+    Route::delete('/product/delete/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+
+    Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart', [CartController::class, 'getCart'])->name('cart.get');
+    Route::put('/cart-updatequantity/{cart_id}/{scope}', [CartController::class, 'updateQuantity'])->name('qty.update');
+    Route::delete('/delete-cartitem/{cart_id}', [CartController::class, 'deleteCartItem'])->name('cart.deleteItem');
+
 
     Route::middleware(['auth:sanctum'])->group(function () {
         
@@ -39,16 +57,16 @@ Route::post('/login', [AuthController::class, 'login']);
 
 });
 
-Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
-Route::post('/create-category', [CategoryController::class, 'store'])->name('category.store');
-Route::get('/admin/category/show/{id}', [CategoryController::class, 'show'])->name('category.show');
-Route::put('/admin/category/update/{id}', [CategoryController::class, 'update'])->name('category.update');
-Route::delete('/category/delete/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
+// Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
+// Route::post('/create-category', [CategoryController::class, 'store'])->name('category.store');
+// Route::get('/admin/category/show/{id}', [CategoryController::class, 'show'])->name('category.show');
+// Route::put('/admin/category/update/{id}', [CategoryController::class, 'update'])->name('category.update');
+// Route::delete('/category/delete/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
 
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/getCategory', [CategoryController::class, 'getCategory']);
-Route::post('/create-product', [ProductController::class, 'store']);
-Route::delete('/product/delete/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+// Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+// Route::get('/getCategory', [CategoryController::class, 'getCategory']);
+// Route::post('/create-product', [ProductController::class, 'store']);
+// Route::delete('/product/delete/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
 
 Route::get('/getCollections', [CollectionController::class, 'index'])->name('collection.index');
 Route::get('/getCollections/{slug}', [CollectionController::class, 'getWithSlug'])->name('collection.slug');

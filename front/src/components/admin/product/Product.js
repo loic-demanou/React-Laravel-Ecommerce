@@ -28,7 +28,8 @@ const Product = () => {
     
     const deleteProduct = (id)=>{
         // setIsLoading(true)
-        axios.delete('http://127.0.0.1:8000/api/product/delete/' +id)
+        // axios.delete('http://127.0.0.1:8000/api/product/delete/' +id)
+        axios.delete('/api/product/delete/' +id)
         .then((result) =>{
             // setIsLoading(false)
             toast.error("Product deleted ! 🙃");

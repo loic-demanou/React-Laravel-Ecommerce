@@ -41,7 +41,8 @@ const CreateProduct = () => {
     // }
 
     useEffect(()=> {
-        axios.get('http://127.0.0.1:8000/api/getCategory/')
+        // axios.get('http://127.0.0.1:8000/api/getCategory/')
+        axios.get('/api/getCategory/')
         .then((result) => {
             console.log(result.data)
             setCategoryList(result.data)
@@ -78,7 +79,7 @@ const CreateProduct = () => {
         formData.append('popular', popular);
         formData.append('status', status);
 
-         axios.post('http://127.0.0.1:8000/api/create-product', formData)
+         axios.post('/api/create-product', formData)
             .then((result) => {
                 toast.success("Created successfully! 🙃");
                 setErrors("")

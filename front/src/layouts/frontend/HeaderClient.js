@@ -161,7 +161,11 @@ const HeaderClient = () => {
             <div className="navbar-buttons d-flex justify-content-end">
               {/* /.nav-collapse*/}
               <div id="search-not-mobile" className="navbar-collapse collapse" /><a data-toggle="collapse" href="#search" className="btn navbar-btn btn-primary d-none d-lg-inline-block"><span className="sr-only">Toggle search</span><i className="fa fa-search" /></a>
-              <div id="basket-overview" className="navbar-collapse collapse d-none d-lg-block"><a href="basket.html" className="btn btn-primary navbar-btn"><i className="fa fa-shopping-cart" /><span>3 items in cart</span></a></div>
+              <div id="basket-overview" className="navbar-collapse collapse d-none d-lg-block">
+                <Link to="/cart" className="btn btn-primary navbar-btn"><i className="fa fa-shopping-cart" />
+                  <span>3 items in cart</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

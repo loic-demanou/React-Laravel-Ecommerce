@@ -17,7 +17,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'category_id' => 'required',
-            'name' => 'required|max:100',
+            'name' => 'required|max:300',
             'slug' => 'required|max:100',
             'description' => 'nullable',
             'brand' => 'required|max:100',

@@ -6,6 +6,7 @@ import ViewCollection from '../components/frontend/collections/ViewCollection';
 import Error404 from '../components/frontend/Error404';
 import Home from '../components/frontend/Home';
 import { Redirect, Route } from 'react-router-dom';
+import Cart from '../components/frontend/Cart';
 
 const PublicRouteList =  [
     
@@ -24,6 +25,8 @@ const PublicRouteList =  [
     { path:'/collections', exact:true, name:'Collection', component:ViewCollection },
     { path:'/collections/:slug', exact:true, name:'ViewProduct', component:ViewProduct },
     { path:'/collections/:category/:product', exact:true, name:'DetailsProduct', component:DetailsProduct },
+
+    { path:'/cart', exact:true, name:'Cart', component:Cart },
 
     { path:'*', exact:true, name:'Error', component:Error404 },
     // <Route path= '*' component= {Error404} />

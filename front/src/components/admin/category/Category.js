@@ -25,7 +25,8 @@ const fetchCategory =()=> {
 } ;
 
 const deleteCategory = (id)=>{
-    axios.delete('http://127.0.0.1:8000/api/category/delete/' +id)
+    // axios.delete('http://127.0.0.1:8000/api/category/delete/' +id)
+    axios.delete('/api/category/delete/' +id)
     .then((result) =>{
         toast.error("Category deleted ! 🙃");
         fetchCategory()

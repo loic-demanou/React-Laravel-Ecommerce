@@ -2,13 +2,19 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import swal from "sweetalert";
+
+toast.configure()
+
 
 
 const DetailsProduct = (props) => {
 
     const[isLoading, setIsLoading] = useState(false);
     const[product, setProduct] = useState([]);
-    const[category, setCategory] = useState([]);
+    // const[category, setCategory] = useState([]);
     const [quantity, setQuantity] = useState(1);
 
 
@@ -56,6 +62,24 @@ const DetailsProduct = (props) => {
     }, [])
     // }, [props.match.params.category, props.match.params.product])
 
+    const addToCart =(e)=> {
+        e.preventDefault()
+        const data = {
+            product_id: product.id,
+            product_qty: quantity,
+        }
+        axios.post(`/api/add-to-cart`, data).then(res => {
+            if (res.data.status=== 201) {
+                toast.success(res.data.message);
+            } else if(res.data.status === 409) {
+                toast.warn(res.data.message);
+            } else if(res.data.status === 401) {
+                toast.error(res.data.message);
+            } else if(res.data.status === 404) {
+                toast.warn(res.data.message);
+            }
+        })
+    }
 
     
     return (
@@ -118,7 +142,7 @@ const DetailsProduct = (props) => {
                         </div>
                         <div className="col-md-6">
                             <div className="box">
-                                <h1 className="text-center">{product.name}</h1>
+                                <h3 className="text-center">{product.name}</h3>
                                 <p className="goToDescription"><a href="#details" className="scroll-to">Scroll to product details, material
                                     &amp; care and sizing</a></p>
 
@@ -128,12 +152,13 @@ const DetailsProduct = (props) => {
                                             <div className="form-control text-center">{quantity}</div>
                                             <button type="button" onClick={handleIncrement}  className="input-group-text">+</button>
                                         </div>
-                                        <button type="button" className="btn btn-primary"><i className="fa fa-shopping-cart" /> Add to cart</button>
+                                        <button type="button" className="btn btn-primary" onClick={addToCart}><i className="fa fa-shopping-cart" /> Add to cart</button>
                                     </div> :
                                     <button type="button" className="btn btn-danger"><i className="" /> out of stock</button>
                                     }
                                 {/* <span>{product.qty >0 ? <span class="badge bg-success">Primary</span> : <span class="badge bg-danger">Primary</span>}</span> */}
-                                <p className="price"><small style={{ fontSize:"15px" }}>{product.qty >0 ? <span class="badge bg-success">In stock</span> : <span class="badge bg-danger">Stock out</span>}</small> { parseFloat(product.selling_price).toLocaleString('en')} Fcfa</p>
+                                <p className="price"><small style={{ fontSize:"15px" }}>{product.qty >0 ? <span class="badge bg-success">In stock</span>
+                                 : <span class="badge bg-danger">Stock out</span>}</small> { parseFloat(product.selling_price).toLocaleString('en')} Fcfa</p>
                                 <p className="text-center buttons">
                                     <a href="basket.html" className="btn btn-outline-primary"><i className="fa fa-heart" /> Add to wishlist</a>
                                 </p>

@@ -26,7 +26,8 @@ const Create = () => {
         const category = {name, slug, description, metaTitle, metaDescription, metaKeyword, status};
         // const category = {name, slug, description};
 
-        await axios.post('http://127.0.0.1:8000/api/create-category', category)
+        // await axios.post('http://127.0.0.1:8000/api/create-category', category)
+        await axios.post('/api/create-category', category)
         .then((result) =>{
             toast.success("Created successfully! 🙃");
             setErrors("")
