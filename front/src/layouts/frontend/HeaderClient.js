@@ -39,7 +39,7 @@ const HeaderClient = () => {
             <button type="button" onClick={logoutSubmit} className="btn btn-danger btn-sm">Logout</button>
           </li>
       </>
-    )
+    ) 
   }
 
 

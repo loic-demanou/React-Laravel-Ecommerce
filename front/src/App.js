@@ -3,6 +3,7 @@ import axios from 'axios';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Login from './components/frontend/auth/Login';
 import Register from './components/frontend/auth/Register';
+import Error403 from './components/frontend/Error403';
 import Error404 from './components/frontend/Error404';
 import MasterLayout from './layouts/admin/MasterLayout';
 import PublicRoute from './PublicRoute';
@@ -25,6 +26,8 @@ function App() {
     <div className="App">
       <Router>
         <Switch>
+        <Route path= '/403' component= {Error403} />
+        <Route path= '/404' component= {Error404} />
         {/* <Route exact path= '/' component= {Home} /> */}
         {/* <Route exact path= '/register' component= {Register} />
         <Route exact path= '/login' component= {Login} /> */}
