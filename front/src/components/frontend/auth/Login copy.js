@@ -73,15 +73,15 @@ const Login = () => {
                     {/* breadcrumb*/}
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
-                            <li aria-current="page" className="breadcrumb-item active"> Se connecter</li>
+                            <li className="breadcrumb-item"><Link to="/">Home</Link></li>
+                            <li aria-current="page" className="breadcrumb-item active"> Sign in</li>
                         </ol>
                     </nav>
                 </div>
                 <div className="col-lg-6">
                     <div className="box">
-                        <h1>Se connecter</h1>
-                        <p className="lead">Vous êtes déjà client ?</p>
+                        <h1>Login</h1>
+                        <p className="lead">Already our customer?</p>
                         {/* <p className="text-muted">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p> */}
                         <hr />
                         <form onSubmit={loginSubmit}>
@@ -91,20 +91,16 @@ const Login = () => {
                                 <span className="form-text text-danger">{loginInput.error_list.email}</span>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="password">Mot de passe</label>
+                                <label htmlFor="password">Password</label>
                                 <input type="password" name="password" onChange={handleInput} value={loginInput.password} className={loginInput.error_list.password ? "form-control border-danger" : "form-control"} />
                                 <span className="form-text text-danger">{loginInput.error_list.password}</span>
                             </div>
                             <div className="text-center">
-                                {!isLoading && <button type="submit" className="btn btn-primary"><i className="fa fa-sign-in" /> Connexion</button>}
+                                {!isLoading && <button type="submit" className="btn btn-primary"><i className="fa fa-sign-in" /> Log in</button>}
 
                                 {isLoading && <button class="btn btn-primary" type="button" disabled>
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>En cours...
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Loading...
                                 </button>}
-
-                                <p className="mt-2">Vous n'avez pas encore de compte ? 
-                                <Link to="/register">Créez votre compte maintenant !</Link>
-                                </p>
                             </div>
                         </form>
                     </div>

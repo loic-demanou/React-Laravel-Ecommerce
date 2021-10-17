@@ -85,11 +85,11 @@ const CreateProduct = () => {
                 setErrors("")
                 history.push('/admin/product');
             })
-            .catch((err) => {
-                setErrors(err.response.data.errors)
-                console.log(err.response.data);
-                toast.error(`Error! ${err.response.data.message} 😣`);
-            })
+            // .catch((err) => {
+            //     setErrors(err.response.data.errors)
+            //     console.log(err.response.data);
+            //     toast.error(`Error! ${err.response.data.message} 😣`);
+            // })
     }
 
 
@@ -236,7 +236,7 @@ const CreateProduct = () => {
                                         {errors.status && <div className="form-text text-danger">{errors.status}</div>}
                                     </div>
 
-                                </div>
+                                </div> 
                             
                             </div>
 

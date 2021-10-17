@@ -58,12 +58,14 @@ class CartController extends Controller
     public function getCart()
     {
         if (auth('sanctum')->check()) {
+            $auth = auth('sanctum')->user()->name;
             $user_id = auth('sanctum')->user()->id;
             $cartitems = Cart::where('user_id', $user_id)->get();
 
             return response()->json([
                 'status' => 200,
                 'cart' => $cartitems,
+                'auth' => $auth,
             ]);
 
         } else {

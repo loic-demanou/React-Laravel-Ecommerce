@@ -7,6 +7,9 @@ import Error404 from '../components/frontend/Error404';
 import Home from '../components/frontend/Home';
 import { Redirect, Route } from 'react-router-dom';
 import Cart from '../components/frontend/Cart';
+import Checkout from '../components/frontend/Checkout';
+import Shop from '../components/frontend/shop/Shop';
+import SocialShareButtons from '../components/frontend/collections/product/SocialShareButtons';
 
 const PublicRouteList =  [
     
@@ -26,7 +29,11 @@ const PublicRouteList =  [
     { path:'/collections/:slug', exact:true, name:'ViewProduct', component:ViewProduct },
     { path:'/collections/:category/:product', exact:true, name:'DetailsProduct', component:DetailsProduct },
 
+    { path:'/social-share-wa/:category/:product', exact:true, name:'Facebook', component:DetailsProduct },
+
+    { path:'/shop', exact:true, name:'Shop', component:Shop },
     { path:'/cart', exact:true, name:'Cart', component:Cart },
+    { path:'/checkout', exact:true, name:'Checkout', component:Checkout },
 
     { path:'*', exact:true, name:'Error', component:Error404 },
     // <Route path= '*' component= {Error404} />

@@ -2,17 +2,17 @@ import axios from "axios";
 import { useHistory, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Loader from '../../../../Loader.gif'
-import ListProduct from "./ListProduct";
-import HistoryBack from "../../../HistoryBack";
+// import Loader from '../../../../Loader.gif'
+import HistoryBack from "../../HistoryBack";
+import ListProduct from "../collections/product/ListProduct";
 
-const ViewProduct = () => {
+const Shop = () => {
 
     const[isLoading, setIsLoading] = useState(false);
     const[product, setProduct] = useState([]);
     const[category, setCategory] = useState([]);
     const[error, setError] = useState(false);
-    const {slug} =useParams();
+    // const {slug} =useParams();
 
     const [collection, setCollection] = useState([]);
     // const [brand, setBrand] = useState([]);
@@ -21,21 +21,22 @@ const ViewProduct = () => {
     var sortName= "name";
     var sortPrice="price"; 
     // const [isLoading, setIsLoading] = useState(false);
-    const submitSearchCategory =(category)=>{
+    const submitSearchCategory =()=>{
         if (search.length >=2) {
-            setError(false);
-            axios.get(`/api/searchSection/${category}/${search}`).then(res => {
-                setError(false);
+            setError(false)
+            axios.get(`/api/searchShopage/${search}`).then(res => {
                 console.log(res.data);
                 setProduct(res.data.product)
             })
-            } else {
-            setError(true);
+        } else {
+            setError(true)
         }
+        
     };
 
-    const sortProduct =(category)=>{
-        axios.get(`/api/sortSection/${category}/${sortby}`).then(res => {
+    const sortProduct =()=>{
+        // axios.get(`/api/sortSection/${category}/${sortby}`).then(res => {
+        axios.get(`/api/sortShopage/${sortby}`).then(res => {
             setProduct(res.data.product)
         })
     };
@@ -44,35 +45,43 @@ const ViewProduct = () => {
         setIsLoading(true);
         axios.get('http://127.0.0.1:8000/api/getCollections')
         .then((result) => {
-            // console.log(result.data)
+            console.log(result.data)
             setCollection(result.data);
             setIsLoading(false)
         });
-        // getBrand();
     }, [])
 
     useEffect( async () => {
         setIsLoading(true);
-        await axios.get('http://127.0.0.1:8000/api/getCollections/'+slug)
+        await axios.get('http://127.0.0.1:8000/api/products/')
         .then((result) =>{
-            setCategory(result.data.category)
-            setProduct(result.data.product)
+            // setCategory(result.data)
+            setProduct(result.data)
             setIsLoading(false)
         })
-    }, [collection, slug])
+    }, [collection])
+
+    // useEffect( async () => {
+    //     setIsLoading(true);
+    //     await axios.get('http://127.0.0.1:8000/api/getCollections/'+slug)
+    //     .then((result) =>{
+    //         setCategory(result.data.category)
+    //         setProduct(result.data.product)
+    //         setIsLoading(false)
+    //     })
+    // }, [collection, slug])
 
     return (
         <div className="container">
             <div className="row">
-            <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-between">
                 <HistoryBack />
                 <div>
                     <form role="search" className="ml-auto">
                         <div className="input-group">
-                            <input type="text" value={search} onChange={(e)=>setSearch(e.target.value)} placeholder={error ? "Minimum 2 charactères" : "Search"} 
-                                                className={error ? "form-control border-danger" : "form-control"} />
+                            <input type="text" value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="Rechercher" className={error ? "form-control border-danger" : "form-control"} />
                             <div className="input-group-append">
-                                <button onClick={ ()=>submitSearchCategory(category.id)} type="button" className="btn btn-primary"><i className="fa fa-search" /></button>
+                                <button onClick={ ()=>submitSearchCategory()} type="button" className="btn btn-primary"><i className="fa fa-search" /></button>
                             </div>
                         </div>
                             {error && <div className="form-text text-danger">Minimum 2 charactères</div>}
@@ -84,15 +93,14 @@ const ViewProduct = () => {
                     {/* breadcrumb*/}
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
-                            <li className="breadcrumb-item"><Link to="/collections">Collections</Link></li>
-                            <li aria-current="page" className="breadcrumb-item active">{category.name}</li>
+                            <li className="breadcrumb-item"><Link className="text-decoration-none" to="/">Acccueil</Link></li>
+                            <li aria-current="page" className="breadcrumb-item active">Boutique</li>
                         </ol>
                     </nav>
                 </div>
                 <div className="col-lg-3">
                     {/*
-        *** MENUS AND FILTERS ***
+        *** MENUS AND FILTERS *** 
         _________________________________________________________
         */}
                     <div className="card sidebar-menu mb-4">
@@ -105,7 +113,7 @@ const ViewProduct = () => {
                                     {/* <a href="category.html" className="nav-link">Men <span className="badge badge-secondary">42</span></a> */}
                                     <ul className="list-unstyled">
                                         { collection && collection.map((col) => (
-                                        <li key={col.id}><Link to={`${col.slug}`} className="nav-link">{col.name}</Link></li>
+                                        <li key={col.id}><Link to={`collections/${col.slug}`} className="nav-link">{col.name}</Link></li>
                                         ))}
                                     </ul>
                                 </li>
@@ -140,17 +148,13 @@ const ViewProduct = () => {
                 </div>
                 <div className="col-lg-9">
                     {/* loader */}
-                        {isLoading && <div class="d-flex justify-content-center">
-                            <div id="loader" className="position-absolute mt-5" style={{ zIndex:9 }} >
-                                <img id="loader" src={Loader} alt="loader"
-                                    height="60px" width="60px" /> <span> Chargement...</span>
-                            </div>
-                        </div>}
-                    {/* <div className="box">
-                        <h1>Ladies</h1>
-                        <p>In our Ladies department we offer wide selection of the best products we have found and carefully selected worldwide.</p>
-                    </div> */}
-                    {/* <div className="box info-bar"> */}
+                        {isLoading && 
+                                     <div className="d-flex justify-content-center">
+                        <div className="spinner-border text-success position-absolute mt-5" style={{ zIndex:9 }} role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                        </div>
+                            }
                     <div className=" border-1 p-3 mb-3 info-bar" style={{ border:"1px solid gray", borderRadius:"8px" }}>
                         <div className="row">
                             {/* <div className="col-md-12 col-lg-4 products-showing">Showing <strong>12</strong> of <strong>25</strong> products</div> */}
@@ -159,7 +163,8 @@ const ViewProduct = () => {
                                     {/* <div className="products-number"><strong>Show</strong><a href="#" className="btn btn-sm btn-primary">12</a><a href="#" className="btn btn-outline-secondary btn-sm">24</a><a href="#" className="btn btn-outline-secondary btn-sm">All</a><span>products</span></div> */}
                                    
                                     <div className="products-sort-by mt-2 mt-lg-0 pull-right"><strong>Trier par</strong>
-                                        <select name="sort-by" className="form-control" value={sortby} onChange={(e)=>sortProduct(category.id, setSortBy(e.target.value) )}>
+                                        <select name="sort-by"  value={sortby} onChange={(e)=>sortProduct(setSortBy(e.target.value) )}>
+                                        {/* <select name="sort-by" className="form-control" value={sortby} onChange={(e)=>sortProduct(category.id, setSortBy(e.target.value) )}> */}
                                             {/* <option>Trier...</option> */}
                                             <option value={sortPrice}>Prix</option>
                                             <option value={sortName}>Nom</option>
@@ -170,14 +175,13 @@ const ViewProduct = () => {
                                         <div className="container">
                                         <form>
                                             <div className="input-group">
-                                                <input type="text" value={search} onChange={(e)=>setSearch(e.target.value)} placeholder={error ? "Minimum 2 charactères" : "Search"} 
-                                                className={error ? "form-control border-danger" : "form-control"} />
-                                                    <button onClick={ ()=>submitSearchCategory(category.id)} type="button" className="btn btn-primary"><i className="fa fa-search" /></button>
+                                                <input type="text" value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="Rechercher" className={error ? "form-control border-danger" : "form-control"} />
+                                                    <button onClick={ ()=>submitSearchCategory()} type="button" className="btn btn-primary"><i className="fa fa-search" /></button>
                                             </div>
                                         </form>
                                         </div>
                                     </div>
-                                                {error && <div className="form-text text-danger">Minimum 2 charactères</div>} */}
+                                    {error && <div className="form-text text-danger">Minimum 2 charactères</div>} */}
                                 </form>
                             </div>
                         </div>
@@ -207,4 +211,4 @@ const ViewProduct = () => {
     );
 }
 
-export default ViewProduct;
+export default Shop;

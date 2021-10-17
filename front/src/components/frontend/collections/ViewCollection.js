@@ -29,12 +29,12 @@ const ViewCollection = () => {
             </div>}
 
             {/* {isLoading && <div className="d-flex justify-content-center"><img src={Loader} alt="." width="33px" /> <span>Loading...</span></div>} */}
-            {!isLoading && <h3>collection page</h3>}
-            <div className="row">
+            {!isLoading && <h3>Categories</h3>}
+            <div className="row justify-content-center">
                 { collection && collection.map((col) =>(
-                    <div className="col-md-3 card mx-2 my-3" key={col.id}>
-                        <Link to={`collections/${col.slug}`}>
-                            <div className="card-body">{col.name}</div>
+                    <div className="col-md-3 card mx-2 my-3 justify-content-center" key={col.id}>
+                        <Link to={`collections/${col.slug}`} style={{ textDecoration:"none" }}>
+                            <div className="card-body text-center">{col.name}</div>
                         </Link>
                     </div>
                 ))}

@@ -87,4 +87,11 @@ class CategoryController extends Controller
         return response()->json("deleted sucessfully");
     }
 
+    public function getBrand($cat)
+    {
+        $category = Category::find($cat);
+        $categories = Category::where('id', $cat);
+        return response()->json($category;
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -29,9 +30,7 @@ class ProductController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'qty' => 'required',
         ]);
-
         $product = new Product;
-        // $produts = Product::create([
             $product->category_id = $request->category_id;
             $product->name = $request->name;
             $product->slug = $request->slug;
@@ -47,7 +46,7 @@ class ProductController extends Controller
             $product->featured = $request->featured==true ? 1 : 0;
             $product->popular = $request->popular==true ? 1 : 0;
 
-            if ($request->image) {
+            if ($request->image) { 
                 $file= $request->file('image');
                 $extension= $file->getClientOriginalExtension();
                 $filename= time() .'.'.$extension;
@@ -64,5 +63,31 @@ class ProductController extends Controller
         $product = Product::find($id);
         $product->delete();
         return response()->json('Deleted sucessfully');
+    }
+
+    public function getOthersProduct($slug)
+    {
+       // $category = Category::find($slug);
+        // $prod->products()->get();
+        $category = Category::where('slug', $slug)
+        ->where('status', 1)->first();
+
+        $product= Product::where('category_id', $category->id)
+        ->where('status', 1)
+        ->inRandomOrder()->limit(3)->get();
+
+        return response()->json([
+            'product'=>$product,
+            'category'=>$category,
+        ]);
+    }
+
+    public function fetchHomeProducts()
+    {
+        $product= Product::where('status', 1)
+        ->inRandomOrder()->limit(10)->get();
+        return response()->json([
+            'product'=>$product,
+        ]);
     }
 }

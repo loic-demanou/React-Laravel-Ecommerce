@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import HistoryBack from "../HistoryBack";
 // import swal from "sweetalert";
 
 toast.configure()
@@ -12,24 +13,32 @@ const Cart = () => {
     const [cart, setCart] = useState([]);
     const history = useHistory();
     
+    var totalCardPrice = 0;
+    var tva = 0;
+
     if (!localStorage.getItem('auth_token')) {
         history.push('/');
         toast.warn("Vous devez dabord être connecté");
     }
 
-    useEffect(() => {
-
+    const fetchCart= ()=> {
         // setIsLoading(true);
         // axios.get(`http://127.0.0.1:8000/api/view-product/${slug}`)
         axios.get(`/api/cart`).then(res => {
             if (res.data.status ===200) {
                 setCart(res.data.cart);
-
+                // console.log(res.data);
+                // setCartLenght(res.data.cart.length);
             } else if(res.data.status === 401) {
                 history.push('/');
                 toast.warn(res.data.message);
             }
         })
+
+    }
+
+    useEffect(() => {
+        fetchCart();
 
     }, [])
 
@@ -62,11 +71,12 @@ const Cart = () => {
         e.preventDefault();
         
         const thisClicked = e.currentTarget;
-        thisClicked.innerText = "...";
+        thisClicked.innerText = "suppression...";
         axios.delete(`/api/delete-cartitem/${cart_id}`).then(res => {
             if (res.data.status === 200) {
                 toast.success(res.data.message);
-                thisClicked.closest("tr").remove();
+                // thisClicked.closest("tr").remove();
+                fetchCart();
             }else if(res.data.status === 404) {
                 toast.error(res.data.message);
                 // thisClicked.innerText = "remove";
@@ -81,16 +91,19 @@ const Cart = () => {
         <table className="table">
             <thead>
                     <tr>
-                        <th colSpan={2}>Product</th>
+                        <th colSpan={2}>Produit</th>
                         {/* <th>Product</th> */}
-                        <th>Quantity</th>
-                        <th>Unit price</th>
+                        <th>Quantité</th>
+                        <th>Prix unitaire</th>
                         {/* <th>Discount</th> */}
                         <th colSpan={2}>Total</th>
                     </tr>
             </thead>
             <tbody>
-                {cart && cart.map((item, idx) => (
+                {cart && cart.map((item, idx) => {
+                    totalCardPrice += item.product.selling_price * item.product_qty;
+                    tva=  (totalCardPrice * item.product.TVA)/100;
+                    return (
                     <tr key={idx}>
                         <td><a href="#"><img src={`http://localhost:8000/${item.product.image}`} alt={item.product.name} /></a></td>
                         <td>{item.product.name}</td>
@@ -110,12 +123,12 @@ const Cart = () => {
                             <button onClick= {(e)=>deleteCartItem(e, item.id)} className="btn btn-danger btn-sm"><i className="fa fa-trash-o" /></button>
                         </td>
                     </tr>
-                ))}
+                    )})}
             </tbody>
             <tfoot>
                 <tr>
-                    <th colSpan={5}>Total</th>
-                    <th colSpan={2}>$446.00</th>
+                    <th colSpan={4}>Total</th>
+                    <th colSpan={3}>{ parseFloat(totalCardPrice).toLocaleString('en')} Fcfa</th>
                 </tr>
             </tfoot>
         </table>
@@ -130,20 +143,21 @@ const Cart = () => {
     return (
         <div className="container">
             <div className="row">
+                <HistoryBack />
                 <div className="col-lg-12">
                     {/* breadcrumb*/}
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"><Link to="/">Home</Link></li>
-                            <li aria-current="page" className="breadcrumb-item active">Shopping cart</li>
+                            <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                            <li aria-current="page" className="breadcrumb-item active">Panier</li>
                         </ol>
                     </nav>
                 </div>
                 <div id="basket" className="col-lg-9">
                     <div className="box">
                         <form method="post" action="checkout1.html">
-                            <h1>Shopping cart</h1>
-                            <p className="text-muted">You currently have {cart.length} item(s) in your cart.</p>
+                            <h1>Panier</h1>
+                            <p className="text-muted">Vous avez actuellement {cart.length} article(s) dans votre panier</p>
                             
                             {cartHTML}
 
@@ -151,8 +165,8 @@ const Cart = () => {
                             <div className="box-footer d-flex justify-content-between flex-column flex-lg-row">
                                 <div className="left"><a href="category.html" className="btn btn-outline-secondary"><i className="fa fa-chevron-left" /> Continue shopping</a></div>
                                 <div className="right">
-                                    <button className="btn btn-outline-secondary"><i className="fa fa-refresh" /> Update cart</button>
-                                    <button type="submit" className="btn btn-primary">Proceed to checkout <i className="fa fa-chevron-right" /></button>
+                                    {/* <button className="btn btn-outline-secondary"><i className="fa fa-refresh" /> Update cart</button> */}
+                                    <Link to="/checkout" className="btn btn-primary">Procéder au paiement <i className="fa fa-chevron-right" /></Link>
                                 </div>
                             </div>
                         </form>
@@ -161,7 +175,7 @@ const Cart = () => {
                     <div className="row same-height-row">
                         <div className="col-lg-3 col-md-6">
                             <div className="box same-height">
-                                <h3>You may also like these products</h3>
+                                <h4>Ces produits peuvent également vous intéressés</h4>
                             </div>
                         </div>
                         <div className="col-md-3 col-sm-6">
@@ -215,27 +229,23 @@ const Cart = () => {
                 <div className="col-lg-3">
                     <div id="order-summary" className="box">
                         <div className="box-header">
-                            <h3 className="mb-0">Order summary</h3>
+                            <h3 className="mb-0">Résumé de la commande</h3>
                         </div>
-                        <p className="text-muted">Shipping and additional costs are calculated based on the values you have entered.</p>
+                        <p className="text-muted">Les frais supplémentaires sont calculés en fonction des valeurs que vous avez saisies.</p>
                         <div className="table-responsive">
                             <table className="table">
                                 <tbody>
                                     <tr>
-                                        <td>Order subtotal</td>
-                                        <th>$446.00</th>
-                                    </tr>
-                                    <tr>
-                                        <td>Shipping and handling</td>
-                                        <th>$10.00</th>
+                                        <td>Sous-total</td>
+                                        <th>{ parseFloat(totalCardPrice).toLocaleString('en')} Fcfa</th>
                                     </tr>
                                     <tr>
                                         <td>Tax</td>
-                                        <th>$0.00</th>
+                                        <th>{ parseFloat(tva).toLocaleString('en')} Fcfa</th>
                                     </tr>
                                     <tr className="total">
                                         <td>Total</td>
-                                        <th>$456.00</th>
+                                        <th>{ parseFloat(tva + totalCardPrice).toLocaleString('en')} Fcfa</th>
                                     </tr>
                                 </tbody>
                             </table>
