@@ -6,25 +6,32 @@ import baner2 from "../../components/frontend/1_2.jpg"
 // "images/banner/1_1.jpg"
 const Home = () => {
 
-  const [home, setHome] =useState([])
+  const [product, setProduct] = useState([]);
 
-  // fetchHomeProducts = () =>{
-  //   axios.get('/api/fetch-home-products').then(res => {
-  //     console.log(res.data);
-  //     setProduct(res.data.product)
-  //   })    
-  // }
+  // axios.get('/api/fetch-home-products').then(res => {
+  //   console.log(res.data);
+  //   setProduct(res.data.product)
+  // }) 
 
+  // axios.get('/api/fetch-home-products')
+  // .then((result) => {
+  //   setProduct(result.data.product)
+  // })
+  useEffect(async () => {
+    // setIsLoading(true);
+    await axios.get('http://127.0.0.1:8000/api/fetch-home-products/')
+      .then((result) => {
+        // setCategory(result.data)
+        setProduct(result.data.product)
+        // setIsLoading(false)
+      })
+  }, [])
 
-    axios.get('/api/fetch-home-products').then(res => {
-      console.log(res.data);
-      // setHome(res.data.product)
-    }) 
 
 
   return (
-    <>
-      <div className="container">
+    <div>
+      <div className="container-fluid mb-4">
         <div className="row">
           <div id="carouselExampleCaptions" className="carousel slide" data-ride="carousel">
             <ol className="carousel-indicators">
@@ -33,21 +40,21 @@ const Home = () => {
               <li data-target="#carouselExampleCaptions" data-slide-to={2} />
             </ol>
             <div className="carousel-inner">
-              <div className="carousel-item active">
-                <img src={baner1} className="d-block w-100" alt="..." />
+              <div className="carousel-item active" style={{ height:"200px" }} >
+                <img src={baner1} className="d-block w-100"alt="..." />
                 <div className="carousel-caption d-none d-md-block">
                   <h5>First slide label</h5>
                   <p>Some representative placeholder content for the first slide.</p>
                 </div>
               </div>
-              <div className="carousel-item">
+              <div className="carousel-item" style={{ height:"200px" }}>
                 <img src={baner2} className="d-block w-100" alt="..." />
                 <div className="carousel-caption d-none d-md-block">
                   <h5>Second slide label</h5>
                   <p>Some representative placeholder content for the second slide.</p>
                 </div>
               </div>
-              <div className="carousel-item">
+              <div className="carousel-item" style={{ height:"200px" }}>
                 <img src={baner1} className="d-block w-100" alt="..." />
                 <div className="carousel-caption d-none d-md-block">
                   <h5>Third slide label</h5>
@@ -114,227 +121,33 @@ const Home = () => {
           </div>
         </div>
         <div className="container">
-          <div className="product-slider owl-carousel owl-theme">
+          <div className="row">
 
-            {home && home.map((prod) => (
+            
+              {product && product.map((prod) =>
+              <div className="item col-md-3 col-sm-6" key={prod.id}>
+                <div className="product" style={{ height:"90%" }}>
+                  <div className="flip-container">
+                    <div className="flipper">
+                      <div className="front"><Link to={`/collections/${prod.category.slug}/${prod.slug}`}><img src={`http://localhost:8000/${prod.image}`} alt className="img-fluid" /></Link>
+                      </div>
+                      <div className="back"><Link to={`/collections/${prod.category.slug}/${prod.slug}`}><img src={`http://localhost:8000/${prod.image}`} alt className="img-fluid" /></Link>
+                      </div>
+                    </div>
+                  </div><Link to={`/collections/${prod.category.slug}/${prod.slug}`} className="invisible"><img src={`http://localhost:8000/${prod.image}`} alt className="img-fluid" /></Link>
+                  <div className="text">
+                    <h3><Link to={`/collections/${prod.category.slug}/${prod.slug}`}>{prod.name}</Link></h3>
+                    <p className="price">
+                      <del />{ parseFloat(prod.selling_price).toLocaleString('fr')} Fcfa
+                    </p>
+                  </div>
+                  {/* /.text*/}
+                </div>
 
-            <div className="item" key={prod.id}>
-              <div className="product">
-                <div className="flip-container">
-                  <div className="flipper">
-                    <div className="front"><a href="detail.html"><img src={baner1} alt className="img-fluid" /></a>
-                    </div>
-                    <div className="back"><a href="detail.html"><img src={baner2} alt className="img-fluid" /></a>
-                    </div>
-                  </div>
-                </div><a href="detail.html" className="invisible"><img src={baner1} alt className="img-fluid" /></a>
-                <div className="text">
-                  <h3><a href="detail.html">{prod.name}</a></h3>
-                  <p className="price">
-                    <del />{ parseFloat(prod.selling_price).toLocaleString('fr')} Fcfa
-                  </p>
-                </div>
-                {/* /.text*/}
-                <div className="ribbon sale">
-                  <div className="theribbon">SALE</div>
-                  <div className="ribbon-background" />
-                </div>
-                {/* /.ribbon*/}
-                <div className="ribbon new">
-                  <div className="theribbon">NEW</div>
-                  <div className="ribbon-background" />
-                </div>
-                {/* /.ribbon*/}
-                <div className="ribbon gift">
-                  <div className="theribbon">GIFT</div>
-                  <div className="ribbon-background" />
-                </div>
-                {/* /.ribbon*/}
               </div>
-              {/* /.product*/}
-            </div>
-            )) 
-            }
-            <div className="item">
-              <div className="product">
-                <div className="flip-container">
-                  <div className="flipper">
-                    <div className="front"><a href="detail.html"><img src="img/product2.jpg" alt className="img-fluid" /></a>
-                    </div>
-                    <div className="back"><a href="detail.html"><img src="img/product2_2.jpg" alt className="img-fluid" /></a>
-                    </div>
-                  </div>
-                </div><a href="detail.html" className="invisible"><img src="img/product2.jpg" alt className="img-fluid" /></a>
-                <div className="text">
-                  <h3><a href="detail.html">White Blouse Armani</a></h3>
-                  <p className="price">
-                    <del>$280</del>$143.00
-                  </p>
-                </div>
-                {/* /.text*/}
-                <div className="ribbon sale">
-                  <div className="theribbon">SALE</div>
-                  <div className="ribbon-background" />
-                </div>
-                {/* /.ribbon*/}
-                <div className="ribbon new">
-                  <div className="theribbon">NEW</div>
-                  <div className="ribbon-background" />
-                </div>
-                {/* /.ribbon*/}
-                <div className="ribbon gift">
-                  <div className="theribbon">GIFT</div>
-                  <div className="ribbon-background" />
-                </div>
-                {/* /.ribbon*/}
-              </div>
-              {/* /.product*/}
-            </div>
-            <div className="item">
-              <div className="product">
-                <div className="flip-container">
-                  <div className="flipper">
-                    <div className="front"><a href="detail.html"><img src="img/product3.jpg" alt className="img-fluid" /></a>
-                    </div>
-                    <div className="back"><a href="detail.html"><img src="img/product3_2.jpg" alt className="img-fluid" /></a>
-                    </div>
-                  </div>
-                </div><a href="detail.html" className="invisible"><img src="img/product3.jpg" alt className="img-fluid" /></a>
-                <div className="text">
-                  <h3><a href="detail.html">Black Blouse Versace</a></h3>
-                  <p className="price">
-                    <del />$143.00
-                  </p>
-                </div>
-                {/* /.text*/}
-              </div>
-              {/* /.product*/}
-            </div>
-            <div className="item">
-              <div className="product">
-                <div className="flip-container">
-                  <div className="flipper">
-                    <div className="front"><a href="detail.html"><img src="img/product3.jpg" alt className="img-fluid" /></a>
-                    </div>
-                    <div className="back"><a href="detail.html"><img src="img/product3_2.jpg" alt className="img-fluid" /></a>
-                    </div>
-                  </div>
-                </div><a href="detail.html" className="invisible"><img src="img/product3.jpg" alt className="img-fluid" /></a>
-                <div className="text">
-                  <h3><a href="detail.html">Black Blouse Versace</a></h3>
-                  <p className="price">
-                    <del />$143.00
-                  </p>
-                </div>
-                {/* /.text*/}
-              </div>
-              {/* /.product*/}
-            </div>
-            <div className="item">
-              <div className="product">
-                <div className="flip-container">
-                  <div className="flipper">
-                    <div className="front"><a href="detail.html"><img src="img/product2.jpg" alt className="img-fluid" /></a>
-                    </div>
-                    <div className="back"><a href="detail.html"><img src="img/product2_2.jpg" alt className="img-fluid" /></a>
-                    </div>
-                  </div>
-                </div><a href="detail.html" className="invisible"><img src="img/product2.jpg" alt className="img-fluid" /></a>
-                <div className="text">
-                  <h3><a href="detail.html">White Blouse Versace</a></h3>
-                  <p className="price">
-                    <del />$143.00
-                  </p>
-                </div>
-                {/* /.text*/}
-                <div className="ribbon new">
-                  <div className="theribbon">NEW</div>
-                  <div className="ribbon-background" />
-                </div>
-                {/* /.ribbon*/}
-              </div>
-              {/* /.product*/}
-            </div>
-            <div className="item">
-              <div className="product">
-                <div className="flip-container">
-                  <div className="flipper">
-                    <div className="front"><a href="detail.html"><img src="img/product1.jpg" alt className="img-fluid" /></a>
-                    </div>
-                    <div className="back"><a href="detail.html"><img src="img/product1_2.jpg" alt className="img-fluid" /></a>
-                    </div>
-                  </div>
-                </div><a href="detail.html" className="invisible"><img src="img/product1.jpg" alt className="img-fluid" /></a>
-                <div className="text">
-                  <h3><a href="detail.html">Fur coat</a></h3>
-                  <p className="price">
-                    <del />$143.00
-                  </p>
-                </div>
-                {/* /.text*/}
-                <div className="ribbon gift">
-                  <div className="theribbon">GIFT</div>
-                  <div className="ribbon-background" />
-                </div>
-                {/* /.ribbon*/}
-              </div>
-              {/* /.product*/}
-            </div>
-            <div className="item">
-              <div className="product">
-                <div className="flip-container">
-                  <div className="flipper">
-                    <div className="front"><a href="detail.html"><img src="img/product2.jpg" alt className="img-fluid" /></a>
-                    </div>
-                    <div className="back"><a href="detail.html"><img src="img/product2_2.jpg" alt className="img-fluid" /></a>
-                    </div>
-                  </div>
-                </div><a href="detail.html" className="invisible"><img src="img/product2.jpg" alt className="img-fluid" /></a>
-                <div className="text">
-                  <h3><a href="detail.html">White Blouse Armani</a></h3>
-                  <p className="price">
-                    <del>$280</del>$143.00
-                  </p>
-                </div>
-                {/* /.text*/}
-                <div className="ribbon sale">
-                  <div className="theribbon">SALE</div>
-                  <div className="ribbon-background" />
-                </div>
-                {/* /.ribbon*/}
-                <div className="ribbon new">
-                  <div className="theribbon">NEW</div>
-                  <div className="ribbon-background" />
-                </div>
-                {/* /.ribbon*/}
-                <div className="ribbon gift">
-                  <div className="theribbon">GIFT</div>
-                  <div className="ribbon-background" />
-                </div>
-                {/* /.ribbon*/}
-              </div>
-              {/* /.product*/}
-            </div>
-            <div className="item">
-              <div className="product">
-                <div className="flip-container">
-                  <div className="flipper">
-                    <div className="front"><a href="detail.html"><img src="img/product3.jpg" alt className="img-fluid" /></a>
-                    </div>
-                    <div className="back"><a href="detail.html"><img src="img/product3_2.jpg" alt className="img-fluid" /></a>
-                    </div>
-                  </div>
-                </div><a href="detail.html" className="invisible"><img src="img/product3.jpg" alt className="img-fluid" /></a>
-                <div className="text">
-                  <h3><a href="detail.html">Black Blouse Versace</a></h3>
-                  <p className="price">
-                    <del />$143.00
-                  </p>
-                </div>
-                {/* /.text*/}
-              </div>
-              {/* /.product*/}
-            </div>
+            )}
+
+
             {/* /.product-slider*/}
           </div>
           {/* /.container*/}
@@ -344,7 +157,7 @@ const Home = () => {
       </div>
 
 
-    </>
+    </div>
 
 
   );

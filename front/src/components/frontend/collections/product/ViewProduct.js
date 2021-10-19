@@ -15,7 +15,6 @@ const ViewProduct = () => {
     const {slug} =useParams();
 
     const [collection, setCollection] = useState([]);
-    // const [brand, setBrand] = useState([]);
     const [sortby, setSortBy] = useState('');
     const [search, setSearch] = useState('');
     var sortName= "name";
