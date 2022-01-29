@@ -47,7 +47,7 @@ const FrontendLayout = () => {
           </Switch>
         </div>
       </div>
-      <FooterClient />
+      {/* <FooterClient /> */}
     </div>
   );
 }

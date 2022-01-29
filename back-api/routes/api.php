@@ -3,11 +3,13 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SocialShareController;
 use App\Http\Controllers\SortController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,10 +37,14 @@ Route::middleware(['auth:sanctum', 'isAPIAdmin'])->group(function () {
         return response()->json(['message' => 'You are in', 'status' => 200], 200);
     });
 
+    Route::get('/DashboardCharts', [ChartController::class, 'DashboardCharts']);
+
+
+    Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
     Route::post('/create-category', [CategoryController::class, 'store'])->name('category.store');
     Route::get('/admin/category/show/{id}', [CategoryController::class, 'show'])->name('category.show');
-    Route::put('/admin/category/update/{id}', [CategoryController::class, 'update'])->name('category.update');
+    Route::post('/admin/category/update/{id}', [CategoryController::class, 'update'])->name('category.update');
     Route::delete('/category/delete/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
 
 
@@ -58,6 +64,11 @@ Route::put('/cart-updatequantity/{cart_id}/{scope}', [CartController::class, 'up
 Route::delete('/delete-cartitem/{cart_id}', [CartController::class, 'deleteCartItem'])->name('cart.deleteItem');
 
 Route::post('/place-order', [CheckoutController::class, 'placeorder']);
+Route::post('/validate-order', [CheckoutController::class, 'validateOrder']);
+Route::get('/ventes', [CheckoutController::class, 'ventes']);
+
+
+Route::get('/pricefilter/{minPrice}/{maxPrice}', [SortController::class, 'pricefilter']);
 Route::get('/sortSection/{categoryId}/{data}', [SortController::class, 'sortSection']);
 Route::get('/sortShopage/{data}', [SortController::class, 'sortShopage']);
 Route::get('/searchSection/{categoryId}/{data}', [SortController::class, 'searchSection']);

@@ -5,6 +5,8 @@ import Dashboard from '../components/admin/Dashboard';
 import CreateProduct from '../components/admin/product/CreateProduct';
 import Product from '../components/admin/product/Product';
 import Profile from '../components/admin/Profile';
+import Vente from '../components/admin/Vente';
+// import Vente from '../components/admin/Vente';
 
 const Routes =  [ 
     // {exact path="/admin/dashboard" component={Dashboard}} 
@@ -20,6 +22,7 @@ const Routes =  [
 
     { path:'/admin/product', exact:true, name:'Product', component:Product },
     { path:'/admin/product/create', exact:true, name:'ProductCreate', component:CreateProduct },
+    { path:'/admin/vente', exact:true, name:'Vente', component:Vente },
 
 ];
 

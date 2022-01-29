@@ -30,7 +30,7 @@ class SortController extends Controller
                 'product'=> "none",
             ]);
         }
-        
+
     }
     public function searchSection(Request $request, $category, $data)
     {
@@ -64,7 +64,7 @@ class SortController extends Controller
                 'product'=> "none",
             ]);
         }
-        
+
     }
 
     public function searchShopage($data)
@@ -76,6 +76,18 @@ class SortController extends Controller
                 // 'category'=> $category,
                 'product'=> $prod,
             ]);
+    }
+
+    public function pricefilter($minPrice, $maxPrice)
+    {
+        $products = Product::where('status', 1)
+            ->whereBetween('selling_price', [$minPrice, $maxPrice])
+            ->latest()->get();
+        return response()->json([
+            'filter' => $products,
+            'min' => $minPrice,
+            'max' => $maxPrice,
+        ]);
     }
 
 }

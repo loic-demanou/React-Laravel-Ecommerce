@@ -3,81 +3,50 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import baner1 from "../../components/frontend/1_1.jpg"
 import baner2 from "../../components/frontend/1_2.jpg"
+import SlideFeatured from "./SlideFeatured";
 // "images/banner/1_1.jpg"
 const Home = () => {
 
   const [product, setProduct] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [featured, setFeatured] = useState([]);
 
-  // axios.get('/api/fetch-home-products').then(res => {
-  //   console.log(res.data);
-  //   setProduct(res.data.product)
-  // }) 
-
-  // axios.get('/api/fetch-home-products')
-  // .then((result) => {
-  //   setProduct(result.data.product)
-  // })
+  
   useEffect(async () => {
     // setIsLoading(true);
-    await axios.get('http://127.0.0.1:8000/api/fetch-home-products/')
+    await axios.get('http://127.0.0.1:8000/api/fetch-home-products')
       .then((result) => {
-        // setCategory(result.data)
         setProduct(result.data.product)
-        // setIsLoading(false)
+        setFeatured(result.data.featured)
       })
   }, [])
 
+  // getting all categories
+  const getCategories = () => {
+    axios.get('/api/getCollections')
+    .then(res => {
+      setCategories(res.data)
+    })
+    .catch(err => console.log(err))
+  }
+
+  // Getting the trending articles
+
+
+  useEffect(() => {
+    getCategories();
+  }, [])
 
 
   return (
-    <div>
-      <div className="container-fluid mb-4">
-        <div className="row">
-          <div id="carouselExampleCaptions" className="carousel slide" data-ride="carousel">
-            <ol className="carousel-indicators">
-              <li data-target="#carouselExampleCaptions" data-slide-to={0} className="active" />
-              <li data-target="#carouselExampleCaptions" data-slide-to={1} />
-              <li data-target="#carouselExampleCaptions" data-slide-to={2} />
-            </ol>
-            <div className="carousel-inner">
-              <div className="carousel-item active" style={{ height:"200px" }} >
-                <img src={baner1} className="d-block w-100"alt="..." />
-                <div className="carousel-caption d-none d-md-block">
-                  <h5>First slide label</h5>
-                  <p>Some representative placeholder content for the first slide.</p>
-                </div>
-              </div>
-              <div className="carousel-item" style={{ height:"200px" }}>
-                <img src={baner2} className="d-block w-100" alt="..." />
-                <div className="carousel-caption d-none d-md-block">
-                  <h5>Second slide label</h5>
-                  <p>Some representative placeholder content for the second slide.</p>
-                </div>
-              </div>
-              <div className="carousel-item" style={{ height:"200px" }}>
-                <img src={baner1} className="d-block w-100" alt="..." />
-                <div className="carousel-caption d-none d-md-block">
-                  <h5>Third slide label</h5>
-                  <p>Some representative placeholder content for the third slide.</p>
-                </div>
-              </div>
-            </div>
-            <a className="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
-              <span className="carousel-control-prev-icon" aria-hidden="true" />
-              <span className="sr-only">Previous</span>
-            </a>
-            <a className="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
-              <span className="carousel-control-next-icon" aria-hidden="true" />
-              <span className="sr-only">Next</span>
-            </a>
-          </div>
-
-        </div>
+    <>
+      {/* <Slide /> */}
+      <div className="w-10/12 mx-auto my-9">
+        <SlideFeatured />
       </div>
-
       <div id="advantages">
         <div className="container">
-          <div className="row mb-4">
+          <div className="row mb-4 mt-4">
             <div className="col-md-4">
               <div className="box clickable d-flex flex-column justify-content-center mb-0 h-100">
                 <div className="icon"><i className="fa fa-heart" /></div>
@@ -105,8 +74,34 @@ const Home = () => {
         </div>
         {/* /.container*/}
       </div>
+      
       {/* /#advantages*/}
       {/* *** ADVANTAGES END ****/}
+
+      <div className="box py-4 my-4">
+          <div className="container" id="advantages">
+            <div className="row">
+              <div className="col-md-12">
+                <h2 className="mb-0">Les categories</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      <div className="row justify-content-center">
+          { categories && categories.map((col) =>(
+              <div className="col-md-3 card mx-2 my-2 justify-content-center hover:bg-gray-100" key={col.id}>
+                  <Link to={`collections/${col.slug}`}>
+                      <div className="flex justify-center items-center cursor-pointer">
+                          <img className="h-75 w-75  object-cover" src={`http://localhost:8000/images/category/${col.image}`} />
+                      </div>
+                  </Link>
+                  <Link to={`collections/${col.slug}`} style={{ textDecoration:"none" }}>
+                      <div className="card-body text-center text-lg">{col.name}</div>
+                  </Link>
+              </div>
+          ))}
+      </div>
 
 
 
@@ -120,12 +115,31 @@ const Home = () => {
             </div>
           </div>
         </div>
+
+        {/* <div className="w-10/12 mx-auto grid grid-cols-4">
+            { product.map((prod) => (
+              <div>
+                  <div className="">
+                    <div className="">
+                      <div className="">
+                        <Link to={`/collections/${prod.category.slug}/${prod.slug}`}><img src={`http://localhost:8000/${prod.image}`} alt className="" />
+                        </Link>
+                      </div>
+                      <h3 className="text-red-500">
+                        <Link to={`/collections/${prod.category.slug}/${prod.slug}`}>{prod.name}</Link>
+                      </h3>
+                      <p className="text-sm ">
+                        { parseFloat(prod.selling_price).toLocaleString('fr')} Fcfa
+                      </p>
+                    </div>
+                  </div>
+              </div>
+            ))}
+        </div> */}
         <div className="container">
           <div className="row">
-
-            
               {product && product.map((prod) =>
-              <div className="item col-md-3 col-sm-6" key={prod.id}>
+              <div className="item col-md-3 col-sm-6 container-lg" key={prod.id}>
                 <div className="product" style={{ height:"90%" }}>
                   <div className="flip-container">
                     <div className="flipper">
@@ -134,10 +148,11 @@ const Home = () => {
                       <div className="back"><Link to={`/collections/${prod.category.slug}/${prod.slug}`}><img src={`http://localhost:8000/${prod.image}`} alt className="img-fluid" /></Link>
                       </div>
                     </div>
-                  </div><Link to={`/collections/${prod.category.slug}/${prod.slug}`} className="invisible"><img src={`http://localhost:8000/${prod.image}`} alt className="img-fluid" /></Link>
-                  <div className="text">
+                  </div>
+                  <Link to={`/collections/${prod.category.slug}/${prod.slug}`} className="invisible"><img src={`http://localhost:8000/${prod.image}`} alt className="img-fluid" /></Link>
+                  <div className="text text-sm">
                     <h3><Link to={`/collections/${prod.category.slug}/${prod.slug}`}>{prod.name}</Link></h3>
-                    <p className="price">
+                    <p className="price text-sm">
                       <del />{ parseFloat(prod.selling_price).toLocaleString('fr')} Fcfa
                     </p>
                   </div>
@@ -157,7 +172,7 @@ const Home = () => {
       </div>
 
 
-    </div>
+    </>
 
 
   );

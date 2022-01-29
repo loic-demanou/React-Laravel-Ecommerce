@@ -1,11 +1,12 @@
 import axios from "axios";
 import { Link, NavLink } from "react-router-dom";
 import { useHistory } from "react-router";
-import logo from '../../Loader.gif';
-import { useEffect, useState } from "react";
+import logo from '../../kako1.png';
+import { useContext, useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Login from "../../components/frontend/auth/Login";
+import { CartContext } from "../../components/contexts/CartContext";
 
 toast.configure()
 
@@ -13,9 +14,10 @@ toast.configure()
 const HeaderClient = () => {
 
   const history = useHistory();
-  const [CartLenght, setCartLenght] = useState(0);
+  const [cart, setCart] = useContext(CartContext);
   const [user, setUser] = useState("");
 
+  // LOGOUT
   const logoutSubmit =(e)=> {
     e.preventDefault();
     axios.post(`/api/logout`)
@@ -44,20 +46,18 @@ const HeaderClient = () => {
     axios.get(`/api/cart`).then(res => {
         if (res.data.status ===200) {
             // setCart(res.data.cart);
-            console.log(res.data);
+            // console.log(res.data);
             setUser(res.data.auth);
-            setCartLenght(res.data.cart.length);
+            // setCartLenght(res.data.cart.length);
         } else if(res.data.status === 401) {
             history.push('/');
             // toast.warn(res.data.message);
         }
     })
-
 }
 
 useEffect(() => {
     fetchCart();
-
 },[])
 
 
@@ -92,7 +92,6 @@ useEffect(() => {
       </>
     ) 
   }
-
 
 
   return (
@@ -152,7 +151,8 @@ useEffect(() => {
       <nav className="navbar navbar-expand-lg">
         <div className="container"><Link to="/" className="navbar-brand home">
           <img src={logo} alt="logo logo" className="d-none d-md-inline-block" />
-          <img src={logo} alt="Obaju logo" className="d-inline-block d-md-none" />
+          <img src={logo} alt="react ecommerce logo" className="d-inline-block d-md-none" />
+          {/* <p className=" font-weight-bold" style={{ fontSize:"9Opx" }}>KAKO</p> */}
           <span className="sr-only">Obaju - go to homepage</span></Link>
           <div className="navbar-buttons">
             <button type="button" data-toggle="collapse" data-target="#navigation" className="btn btn-outline-secondary navbar-toggler"><span className="sr-only">Toggle navigation</span><i className="fa fa-align-justify" /></button>
@@ -163,64 +163,13 @@ useEffect(() => {
               <li className="nav-item"><NavLink exact activeClassName="nav-link active" className="nav-link" to="/" >Accueil</NavLink></li>
               <li className="nav-item"><NavLink activeClassName="nav-link active"className="nav-link" to="/shop">Boutique</NavLink></li>
               <li className="nav-item"><NavLink activeClassName="nav-link active"className="nav-link" to="/collections">Collections</NavLink></li>
-              <li className="nav-item dropdown menu-large"><a href="#" data-toggle="dropdown" data-hover="dropdown" data-delay={200} className="dropdown-toggle nav-link">Men<b className="caret" /></a>
-                <ul className="dropdown-menu megamenu">
-                  <li>
-                    <div className="row">
-                      <div className="col-md-6 col-lg-3">
-                        <h5>Clothing</h5>
-                        <ul className="list-unstyled mb-3">
-                          <li className="nav-item"><a href="category.html" className="nav-link">T-shirts</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Shirts</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Pants</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Accessories</a></li>
-                        </ul>
-                      </div>
-                      <div className="col-md-6 col-lg-3">
-                        <h5>Shoes</h5>
-                        <ul className="list-unstyled mb-3">
-                          <li className="nav-item"><a href="category.html" className="nav-link">Trainers</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Sandals</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Hiking shoes</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Casual</a></li>
-                        </ul>
-                      </div>
-                      <div className="col-md-6 col-lg-3">
-                        <h5>Accessories</h5>
-                        <ul className="list-unstyled mb-3">
-                          <li className="nav-item"><a href="category.html" className="nav-link">Trainers</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Sandals</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Hiking shoes</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Casual</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Hiking shoes</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Casual</a></li>
-                        </ul>
-                      </div>
-                      <div className="col-md-6 col-lg-3">
-                        <h5>Featured</h5>
-                        <ul className="list-unstyled mb-3">
-                          <li className="nav-item"><a href="category.html" className="nav-link">Trainers</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Sandals</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Hiking shoes</a></li>
-                        </ul>
-                        <h5>Looks and trends</h5>
-                        <ul className="list-unstyled mb-3">
-                          <li className="nav-item"><a href="category.html" className="nav-link">Trainers</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Sandals</a></li>
-                          <li className="nav-item"><a href="category.html" className="nav-link">Hiking shoes</a></li>
-                        </ul>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </li>
             </ul>
             <div className="navbar-buttons d-flex justify-content-end">
               {/* /.nav-collapse*/}
               <div id="search-not-mobile" className="navbar-collapse collapse" /><a data-toggle="collapse" href="#search" className="btn navbar-btn btn-primary d-none d-lg-inline-block"><span className="sr-only">Toggle search</span><i className="fa fa-search" /></a>
               <div id="basket-overview" className="navbar-collapse collapse d-none d-lg-block">
                 <Link to="/cart" className="btn btn-primary navbar-btn"><i className="fa fa-shopping-cart" />
-                  <span>{CartLenght} </span>
+                  <span className="text-white">{cart.length} </span>
                 </Link>
               </div>
             </div>
@@ -239,6 +188,7 @@ useEffect(() => {
           </form>
         </div>
       </div>
+      
     </div>
 
 

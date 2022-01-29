@@ -40,7 +40,7 @@ const Login = () => {
                 if (res.data.status === 200) {
                     setIsLoading(false);
                     localStorage.setItem('auth_token', res.data.token);
-                    localStorage.setItem('auth_name', res.data.username);
+                    localStorage.setItem('auth_name', res.data.username); 
                     // swal("Success", res.data.message, 'success');
                     toast.success(res.data.message, {
                         position: "bottom-right",
@@ -57,6 +57,7 @@ const Login = () => {
                         history.push('/');
                     }
                 } else if(res.data.status === 401) {
+                    setIsLoading(false);
                     swal("Warning", res.data.message, 'warning');
                 }else {
                     setIsLoading(false);

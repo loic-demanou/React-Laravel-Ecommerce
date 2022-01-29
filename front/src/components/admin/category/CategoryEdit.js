@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import useFetch from "../../useFetch";
 
 toast.configure()
-
+ 
 const CategoryEdit = () => {
 
     const history = useHistory();
@@ -15,6 +15,7 @@ const CategoryEdit = () => {
     const {id} = useParams();
     // const { data:category, isLoading, error } = useFetch('http://localhost:8000/api/admin/category/show/'+id);
 
+    const [image, setImage] = useState("")
     const [name, setName] = useState("")
     const [slug, setSlug] = useState("")
     const [description, setDescription] = useState("")
@@ -28,7 +29,8 @@ const CategoryEdit = () => {
 
         axios.get('http://localhost:8000/api/admin/category/show/'+id)
         .then((result) => {
-            console.log(result.data)
+            // console.log(result.data)
+            setImage(result.data.image);
             setName(result.data.name);
             setSlug(result.data.slug)
             setDescription(result.data.description)
@@ -43,13 +45,21 @@ const CategoryEdit = () => {
 
     const updateCategory = async(e) => {
         e.preventDefault()
-        console.log("clické");
-        const category = {name, slug, description, metaTitle, metaDescription, metaKeyword, status};
-        // const category = {name, slug, description};
 
-        await axios.put('http://localhost:8000/api/admin/category/update/'+id, category)
+        const category = new FormData();
+        category.append('image', image[0]);
+        category.append('name', name);
+        category.append('slug', slug);
+        category.append('description', description);
+        category.append('metaTitle', metaTitle);
+        category.append('metaDescription', metaDescription);
+        category.append('metaKeyword', metaKeyword);
+        category.append('status', status);
+        // const category = {name, slug, description, metaTitle, metaDescription, metaKeyword, status};
+
+        await axios.post('/api/admin/category/update/'+id, category)
         .then((result) =>{
-            toast.success("Category created successfully! 🙃");
+            toast.success("Category updated successfully! 🙃");
             setErrors("")
             // console.log(result.data)
             history.push('/admin/category');
@@ -74,7 +84,13 @@ const CategoryEdit = () => {
             <div className="card">
                 
                 <span className="card-header d-flex justify-content-between">
-                    <h5>Edit category {name}</h5>
+                    <div className="d-flex align-items-center">
+                    <img className="rounded-full h-12 w-12  object-cover" 
+                        src={`http://localhost:8000/images/category/${image}`} alt="Aucune image" />
+                        <h5>Edit category {name} </h5>
+                        
+                    </div>
+                   
                     <Link to="/admin/category" className="btn btn-primary">Back</Link>
                 </span>
                 <div className="card-body">
@@ -92,6 +108,11 @@ const CategoryEdit = () => {
                 </ul>
                 <div className="tab-content" id="myTabContent">
                     <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div className="my-2">
+                            <label htmlFor="category" className="form-label">choisir une nouvelle image de categorie(facultatif)</label>
+                            <input type="file" className={errors.image ? "form-control border-danger": "form-control"} onChange={(e) => setImage(e.target.files)} />
+                            {errors.image && <div classimage="form-text text-danger">{errors.image}</div>}
+                        </div>
                         <div className="my-2">
                             <label htmlFor="category" className="form-label">Category name</label>
                             <input type="text" className={errors.name ? "form-control border-danger": "form-control"} value={name} onChange={(e) => setName(e.target.value)} />

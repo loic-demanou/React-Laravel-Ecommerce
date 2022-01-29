@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import swal from "sweetalert";
+import Paypal from "../Paypal";
 
 toast.configure()
 
@@ -13,6 +14,15 @@ const Checkout = () => {
     const [cart, setCart] = useState([]);
     const [error, setError] = useState([]);
     const history = useHistory();
+    const [paidFor, setPaidFor] = useState(false);
+
+    const [isPaypal, setIsPaypal] = useState(false);
+    // const [error, setError] = useState(null);
+    const paypalRef = useRef();
+
+    var totalCardPrice = 0;
+    var tva = 0;
+
     
     const [checkoutInput, setCheckoutInput] = useState({
         firstname:'',
@@ -30,10 +40,10 @@ const Checkout = () => {
         setCheckoutInput({...checkoutInput, [e.target.name] : e.target.value });
     }
 
-    const submitOrder =(e)=>{
+    const submitOrder =(e, payment_mode)=>{
         e.preventDefault();
 
-        const data ={
+        const formData ={
             firstname: checkoutInput.firstname,
             lastname: checkoutInput.lastname,
             phone: checkoutInput.phone,
@@ -42,21 +52,133 @@ const Checkout = () => {
             city: checkoutInput.city,
             state: checkoutInput.state,
             zipcode: checkoutInput.zipcode,
+            payment_mode: payment_mode,
+            payment_id:''
         }
-        axios.post(`/api/place-order`, data).then(res => {
-            if (res.data.status === 200) {
-                swal("Commande passée avec success !", res.data.message, "success");
-                setError([]);
-                history.push('/thank-you');
-            } else if(res.data.status === 422) {
-                swal("Tous les champs sont obligatoires", "", "error");
-                setError(res.data.errors);
-            }
-        })
+
+        switch (payment_mode) {
+            case 'paypal':
+                    axios.post(`/api/validate-order`,formData).then(res => {
+                        if (res.data.status === 200) {
+                            setError([]);
+                            setIsPaypal(true)
+                            // <Paypal totalCardPrice={totalCardPrice}/>
+                            window.paypal
+                            .Buttons({
+                                createOrder: (data, actions) => {
+                                    return actions.order.create({
+                                        purchase_units: [{
+                                            description: 'KAKO store checkout',
+                                            amount: {
+                                                currency_code: 'USD',
+                                                value: 0.1,
+                                            }
+                                        }]
+                                    });
+                                },
+                                style: {
+                                    layout: 'horizontal',
+                                    size: 'small',
+                                    color: 'gold',
+                                    shape: 'rect',
+                                    label: 'paypal',
+                                    height: 40,
+                                    tagline: 'false'
+                                },
+                                onApprove: async (data, actions) => {
+                                    const order = await actions.order.capture();
+                                    setPaidFor(true);
+                                    console.log('ORDER', order);
+                                    formData.payment_id=order.id
+
+                                    axios.post(`/api/place-order`, formData).then(paypal_res => {
+                                        if (paypal_res.data.status === 200) {
+                                            swal("Commande passée avec success !", paypal_res.data.message, "success");
+                                            setError([]);
+                                            history.push('/thank-you');
+                                        }
+                                    })
+                                    // history.push('/thank-you')
+                                },
+                                onError: err => {
+                                    setError(err);
+                                    console.error('ERROR', err);
+                                },
+                            })
+                            .render(paypalRef.current);
+                        
+                        } else if(res.data.status === 422) {
+                            swal("Tous les champs sont obligatoires", "", "error");
+                            setError(res.data.errors);
+                        }
+                    })
+                
+                break;
+
+            case 'cod':
+                axios.post(`/api/place-order`, formData).then(res => {
+                    if (res.data.status === 200) {
+                        swal("Commande passée avec success !", res.data.message, "success");
+                        setError([]);
+                        history.push('/thank-you');
+                    } else if(res.data.status === 422) {
+                        swal("Tous les champs sont obligatoires", "", "error");
+                        setError(res.data.errors);
+                    }
+                })
+                break;
+
+            case 'razorpay':
+                axios.post(`/api/validate-order`,formData).then(res => {
+                    if (res.data.status === 200) {
+                        setError([]);
+
+                        var options = {
+                            "key": "rzp_test_N7LcXFp16dDvku", // Enter the Key ID generated from the Dashboard
+                            "amount": (1 * 100 ), // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                            // "amount": ((totalCardPrice + tva) * 100 ),
+                            // "currency": "INR",
+                            "name": "KAKO",
+                            "description": "Merci d'avoir acheté sur KAKO",
+                            "image": "https://example.com/your_logo",
+                            "handler": function (response){
+                                // console.log(response.razorpay_payment_id);
+                                formData.payment_id= response.razorpay_payment_id
+
+                                axios.post(`/api/place-order`, formData).then(place_res => {
+                                    if (place_res.data.status === 200) {
+                                        swal("Commande passée avec success !", place_res.data.message, "success");
+                                        setError([]);
+                                        history.push('/thank-you');
+                                    }
+                                })
+
+                            },
+                            "prefill": {
+                                "name": formData.firstname + formData.lastname,
+                                "email": formData.email,
+                                "contact": formData.phone
+                            },
+                            "theme": {
+                                "color": "#3399cc"
+                            }
+                        };
+                        var rzp = new window.Razorpay(options);
+                        rzp.open();
+
+                    } else if(res.data.status === 422) {
+                        swal("Tous les champs sont obligatoires", "", "error");
+                        setError(res.data.errors);
+                    }
+                });
+                break;
+        
+            default:
+                break;
+        }
+
     }
 
-    var totalCardPrice = 0;
-    var tva = 0;
 
     const back= ()=>{
         history.go(-1)
@@ -73,8 +195,6 @@ const Checkout = () => {
         axios.get(`/api/cart`).then(res => {
             if (res.data.status === 200) {
                 setCart(res.data.cart);
-                // console.log(res.data);
-                // setCartLenght(res.data.cart.length);
             } else if (res.data.status === 401) {
                 history.push('/');
                 toast.warn(res.data.message);
@@ -85,7 +205,6 @@ const Checkout = () => {
 
     useEffect(() => {
         fetchCart();
-
     }, [])
 
 
@@ -234,9 +353,16 @@ const Checkout = () => {
                                 </div>
                             </div>
 
-                            <div className="box-footer d-flex justify-content-between">
-                                <button type="button" onClick={()=>back()} className="btn btn-outline-secondary"><i className="fa fa-chevron-left" />Retourner au panier</button>
-                                <button type="submit" className="btn btn-primary" onClick={submitOrder} >Passer la commande<i className="fa fa-chevron-right" /></button>
+                            <div className="box-footer flex justify-between items-center">
+                                <div>
+                                    <button type="button" onClick={()=>back()} className="btn btn-outline-secondary"><i className="fa fa-chevron-left" />Retourner au panier</button>
+                                </div>
+                                <div className="flex justify-center items-center">
+                                    <button type="submit" className="btn btn-primary" onClick={(e)=>submitOrder(e, 'cod')} >Passer la commande<i className="fa fa-chevron-right" /></button>
+                                    <button type="submit" className="btn btn-primary" onClick={(e)=>submitOrder(e, 'razorpay')} > <small>Payez avec </small>Razorpay</button>
+                                    {!isPaypal && <button type="submit" className="btn btn-primary mr-1" onClick={(e)=>submitOrder(e, 'paypal')}>Paypal</button>}
+                                    {isPaypal && <div className="ml-1 flex justify-center items-center" ref={paypalRef} />}
+                                </div>
                             </div>
                         </form>
                     </div>

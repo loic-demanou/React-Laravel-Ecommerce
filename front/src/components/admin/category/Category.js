@@ -65,6 +65,7 @@ const deleteCategory = (id)=>{
                     <thead className="bg-primary text-white">
                         <tr>
                             <th scope="col">N°</th>
+                            <th scope="col">Image</th>
                             <th scope="col">Name</th>
                             <th scope="col">Slug</th>
                             <th scope="col">Status</th>
@@ -74,22 +75,25 @@ const deleteCategory = (id)=>{
                     <tbody>
                             {
                                 categories.map((c, index) =>
-                        <tr key= {c.id}>
-                                
-                                {/* <div> */}
-                                    <td >{index +1}</td>
-                                    <td>{c.name}</td>
-                                    <td>{c.slug}</td>
-                                    <td>
-                                        { c.status ==1 ?<span className="badge rounded-pill bg-primary">Active</span>
-                                        : <span className="badge rounded-pill bg-danger">Unactive</span>}
-                                    </td>
-                                    <td>
-                                        <Link to={`/admin/category/edit/${c.id}`} className="btn btn-warning m-2 text-white"><i className="fa fa-edit"></i></Link>
-                                        <button onClick={() =>deleteCategory(c.id)} className="btn btn-danger"><i className="fa fa-trash"></i></button>
-                                    </td>
-                                {/* </div> */}
-                        </tr>
+                                <tr key= {c.id}>
+                                        
+                                        {/* <div> */}
+                                            <td >{index +1}</td>
+                                            <td ><img className="rounded-full h-12 w-12  object-cover" 
+                                                src={`http://localhost:8000/images/category/${c.image}`} alt="Aucune image" />
+                                            </td>
+                                            <td>{c.name}</td>
+                                            <td>{c.slug}</td>
+                                            <td>
+                                                { c.status ==1 ?<span className="badge rounded-pill bg-primary">Active</span>
+                                                : <span className="badge rounded-pill bg-danger">Unactive</span>}
+                                            </td>
+                                            <td>
+                                                <Link to={`/admin/category/edit/${c.id}`} className="btn btn-warning m-2 text-white"><i className="fa fa-edit"></i></Link>
+                                                <button onClick={() =>deleteCategory(c.id)} className="btn btn-danger"><i className="fa fa-trash"></i></button>
+                                            </td>
+                                        {/* </div> */}
+                                </tr>
                                 )
                             }
                     </tbody>

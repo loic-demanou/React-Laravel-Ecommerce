@@ -10,6 +10,7 @@ import Cart from '../components/frontend/Cart';
 import Checkout from '../components/frontend/Checkout';
 import Shop from '../components/frontend/shop/Shop';
 import SocialShareButtons from '../components/frontend/collections/product/SocialShareButtons';
+import ThankYou from '../components/frontend/ThankYou';
 
 const PublicRouteList =  [
     
@@ -34,6 +35,8 @@ const PublicRouteList =  [
     { path:'/shop', exact:true, name:'Shop', component:Shop },
     { path:'/cart', exact:true, name:'Cart', component:Cart },
     { path:'/checkout', exact:true, name:'Checkout', component:Checkout },
+
+    { path:'/thank-you', exact:true, name:'Checkout', component:ThankYou },
 
     { path:'*', exact:true, name:'Error', component:Error404 },
     // <Route path= '*' component= {Error404} />

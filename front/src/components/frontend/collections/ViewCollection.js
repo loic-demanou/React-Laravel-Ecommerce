@@ -12,7 +12,6 @@ const ViewCollection = () => {
         setIsLoading(true);
         axios.get('http://127.0.0.1:8000/api/getCollections')
         .then((result) => {
-            console.log(result.data)
             setCollection(result.data);
             setIsLoading(false)
         })
@@ -29,12 +28,17 @@ const ViewCollection = () => {
             </div>}
 
             {/* {isLoading && <div className="d-flex justify-content-center"><img src={Loader} alt="." width="33px" /> <span>Loading...</span></div>} */}
-            {!isLoading && <h3>Categories</h3>}
+            {!isLoading && <h3 className="w-9/12 mx-auto">Categories</h3>}
             <div className="row justify-content-center">
                 { collection && collection.map((col) =>(
-                    <div className="col-md-3 card mx-2 my-3 justify-content-center" key={col.id}>
+                    <div className="col-md-3 card mx-2 my-2 justify-content-center hover:bg-gray-100" key={col.id}>
+                        <Link to={`collections/${col.slug}`}>
+                            <div className="flex justify-center items-center cursor-pointer">
+                                <img className="" src={`http://localhost:8000/images/category/${col.image}`} height="150px" width="150px" />
+                            </div>
+                        </Link>
                         <Link to={`collections/${col.slug}`} style={{ textDecoration:"none" }}>
-                            <div className="card-body text-center">{col.name}</div>
+                            <div className="card-body text-center text-lg">{col.name}</div>
                         </Link>
                     </div>
                 ))}

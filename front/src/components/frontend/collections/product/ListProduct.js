@@ -33,7 +33,7 @@ const ListProduct = ({ category, product }) => {
         <>
             {product.length > 0 ? product.map((prod) => (
                 <div className="col-lg-3 col-md-6" key={prod.id}>
-                    <div className="product" style={{ height:"90%" }} >
+                    <div className="product rounded h-auto" >
                         <div className="flip-container">
                             <div className="flipper">
                                 <div className="front"><Link to={`/collections/${prod.category.slug}/${prod.slug}`}><img src={`http://localhost:8000/${prod.image}`} alt={prod.name} className="img-fluid" /></Link></div>
@@ -43,20 +43,22 @@ const ListProduct = ({ category, product }) => {
                         <Link to={`/collections/${prod.category.slug}/${prod.slug}`} className="invisible"><img src={`http://localhost:8000/${prod.image}`} alt className={prod.name} className="img-fluid" /></Link>
                         <div className="text">
                             <h3><Link to={`/collections/${prod.category.slug}/${prod.slug}`}>{prod.name}</Link></h3>
-                            <p className="price">
-                                {/* <del>$280 </del> */}
+                            {/* <p className="price">
                                 { parseFloat(prod.selling_price).toLocaleString('fr')} Fcfa
-                            </p>
+                            </p> */}
                             <p className="buttons"><Link to={`/collections/${prod.category.slug}/${prod.slug}`} className="btn btn-outline-secondary btn-sm ">Details</Link>
-                            <button className="btn btn-primary btn-sm" onClick={()=>addToCart(prod.id)}><i className="fa fa-shopping-cart" />Panier</button></p>
+                                <button className="btn btn-primary btn-sm" onClick={()=>addToCart(prod.id)}>
+                                    <i className="fa fa-shopping-cart" />{ parseFloat(prod.selling_price).toLocaleString('fr')} Fcfa
+                                </button>
+                            </p>
                         </div>
                         {/* /.text*/}
-                       { prod.featured==1 ? <div className="ribbon sale" style={{ fontSize:"10px" }}>
+                       { prod.featured ? <div className="ribbon sale" style={{ fontSize:"10px" }}>
                             <div className="theribbon"><small>Vedette</small></div>
                             <div className="ribbon-background" />
                         </div> : ""}
                         {/* /.ribbon*/}
-                        { prod.popular == 1 ? <div className="ribbon new" style={{ fontSize:"8px" }}>
+                        { prod.popular ? <div className="ribbon new" style={{ fontSize:"8px" }}>
                             <div className="theribbon">Populaire</div>
                             <div className="ribbon-background" />
                         </div> : ""}

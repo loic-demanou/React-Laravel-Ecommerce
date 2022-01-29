@@ -11,6 +11,7 @@ const Create = () => {
 
     const history = useHistory();
 
+    const [image, setImage] = useState("")
     const [name, setName] = useState("")
     const [slug, setSlug] = useState("")
     const [description, setDescription] = useState("")
@@ -22,9 +23,15 @@ const Create = () => {
 
     const createCategory = async(e) => {
         e.preventDefault()
-        // console.log("clické");
-        const category = {name, slug, description, metaTitle, metaDescription, metaKeyword, status};
-        // const category = {name, slug, description};
+        const category = new FormData();
+        category.append('image', image[0]);
+        category.append('name', name);
+        category.append('slug', slug);
+        category.append('description', description);
+        category.append('metaTitle', metaTitle);
+        category.append('metaDescription', metaDescription);
+        category.append('metaKeyword', metaKeyword);
+        category.append('status', status);
 
         // await axios.post('http://127.0.0.1:8000/api/create-category', category)
         await axios.post('/api/create-category', category)
@@ -70,6 +77,11 @@ const Create = () => {
                 </ul>
                 <div className="tab-content" id="myTabContent">
                     <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div className="my-2">
+                            <label htmlFor="category" className="form-label">Category Image</label>
+                            <input type="file" className={errors.image ? "form-control border-danger": "form-control"} onChange={(e) => setImage(e.target.files)} />
+                            {errors.image && <div classimage="form-text text-danger">{errors.image}</div>}
+                        </div>
                         <div className="my-2">
                             <label htmlFor="category" className="form-label">Category name</label>
                             <input type="text" className={errors.name ? "form-control border-danger": "form-control"} value={name} onChange={(e) => setName(e.target.value)} />

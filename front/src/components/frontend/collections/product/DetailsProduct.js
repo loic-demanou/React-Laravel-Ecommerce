@@ -115,7 +115,7 @@ const back =()=> {
                         <ol className="breadcrumb">
                             <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
                             <li className="breadcrumb-item"><Link to="/collections">Collections</Link></li>
-                            {/* <li className="breadcrumb-item"><Link to="/collections/:slug">{product.category.name}</Link></li> */}
+                            {/* <li className="breadcrumb-item"><Link to="/collections/slug">{product.category.name}</Link></li> */}
                             <li aria-current="page" className="breadcrumb-item active">{product.name}</li>
                             {/* <li aria-current="page" className="breadcrumb-item float-end"><button>Back</button></li> */}
                         </ol>
@@ -126,7 +126,7 @@ const back =()=> {
         *** MENUS AND FILTERS ***
         _________________________________________________________
         */}
-                    <div className="card sidebar-menu mb-4">
+                    {/* <div className="card sidebar-menu mb-4">
                         <div className="card-header">
                             <h3 className="h4 card-title">Categories</h3>
                         </div>
@@ -136,13 +136,12 @@ const back =()=> {
                                     <ul className="list-unstyled">
                                         { collection && collection.map((col) => (
                                         <li key={col.id}><Link to={"collections/"+col.slug} className="nav-link">{col.name}</Link></li>
-                                        // <li key={col.id}><Link to={`collections/${col.slug}`} className="nav-link">{col.name}</Link></li>
                                         ))}
                                     </ul>
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </div> */}
                     {/* *** MENUS AND FILTERS END ****/}
                 </div>
                 <div className="col-lg-9 order-1 order-lg-2">
@@ -153,12 +152,12 @@ const back =()=> {
                                 <div className="item"> <img src={`http://localhost:8000/${product.image}`} alt className="img-fluid" /></div>
                                 <div className="item"> <img src={`http://localhost:8000/${product.image}`} alt className="img-fluid" /></div>
                             </div>
-                            { product.featured==1 ? <div className="ribbon sale" style={{ fontSize:"8px" }}>
+                            { product.featured ? <div className="ribbon sale" style={{ fontSize:"8px" }}>
                                 <div className="theribbon">En vedette</div>
                                 <div className="ribbon-background" />
                             </div> : ""}
                             {/* /.ribbon*/}
-                            { product.popular == 1 ?<div className="ribbon new" style={{ fontSize:"8px" }}>
+                            { product.popular  ?<div className="ribbon new" style={{ fontSize:"8px" }}>
                                 <div className="theribbon">Populaire</div>
                                 <div className="ribbon-background" />
                             </div> : ""}
